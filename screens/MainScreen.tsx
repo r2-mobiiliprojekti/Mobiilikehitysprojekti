@@ -6,6 +6,9 @@ import {
   StyleSheet
 } from 'react-native';
 import { logout } from '../services/firebaseService';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 
 type MainScreenProps = {
   user: {
@@ -18,6 +21,8 @@ type MainScreenProps = {
 };
 
 const MainScreen: React.FC<MainScreenProps> = ({ user, onLogout, onGoToSignup }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const handleLogout = async () => {
     try {
       if (!user.isGuest) {
@@ -27,35 +32,41 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onLogout, onGoToSignup })
       console.error('Virhe kirjautuessa:', error);
     } finally {
       onLogout();
+      // Navigate back to Auth stack
+      navigation.navigate('Auth');
     }
+  };
+
+  const goToSignup = () => {
+    onGoToSignup();
+    navigation.navigate('Auth');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.welcomeText}>
-        Hello, {user.email}!
+        Tervetuloa, {user.email}!
       </Text>
 
-
-      {/*testin kortti firebase testiä varten*/}
       <Text style={styles.userType}>
-        {user.isGuest ? 'Vierailija' : 'Rekisteröitynyt'}
+        {user.isGuest ? 'Vierailija' : 'Rekisteröitynyt käyttäjä'}
       </Text>
       
-
       {!user.isGuest && (
         <View style={styles.userInfo}>
           <Text style={styles.userId}>User ID: {user.uid}</Text>
-          <Text style={styles.firebaseNote}>Authenticated with Firebase</Text>
+          <Text style={styles.firebaseNote}>AUthenticated Firebasella</Text>
         </View>
       )}
       
-      {user.isGuest && (
-        <TouchableOpacity style={styles.upgradeButton} onPress={onGoToSignup}>
-          <Text style={styles.upgradeButtonText}>Create Account</Text>
-        </TouchableOpacity>
-      )}
       
+      <TouchableOpacity 
+        style={[styles.backButton, { marginBottom: 20 }]} 
+        onPress={() => navigation.navigate('MainApp')}
+      >
+        <Text style={styles.backButtonText}>Takaisin harjoitteluun</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>
           {user.isGuest ? 'Takaisin kirjautumiseen' : 'Kirjaudu ulos'}
@@ -113,16 +124,15 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     fontWeight: '600',
   },
-  upgradeButton: {
-    backgroundColor: '#FF9800',
+  backButton: {
+    backgroundColor: '#2196F3',
     borderRadius: 8,
     padding: 16,
     width: '100%',
     maxWidth: 300,
     alignItems: 'center',
-    marginBottom: 20,
   },
-  upgradeButtonText: {
+  backButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',

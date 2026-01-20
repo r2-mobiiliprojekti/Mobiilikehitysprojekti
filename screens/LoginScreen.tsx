@@ -100,7 +100,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
         </TouchableOpacity>
         
         <Text style={styles.note}>
-          {loading ? 'Käsitellään...' : 'Vieraskäyttäjä ilman Firebasea (ei toimi)'}
+          {loading ? 'Käsitellään...' : 'Mobiiliprojekti @2026'}
         </Text>
       </View>
     </View>
