@@ -1,7 +1,19 @@
 export type RootStackParamList = {
-  Home: undefined
-  FinSwe: undefined
-  SweFin: undefined
-  ConnectWords: undefined
-  PickWord: undefined
-}
+  Auth: undefined;
+  MainApp: undefined;
+  Profile: undefined;
+};
+
+export type AuthStackParamList = {
+  Login: undefined;
+  Signup: undefined;
+};
+
+export type MainAppStackParamList = {
+  Home: undefined;
+  FinSwe: undefined;
+  SweFin: undefined;
+  ConnectWords: undefined;
+  PickWord: undefined;
+  Profile: undefined;
+};
