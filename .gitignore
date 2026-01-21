@@ -40,3 +40,6 @@ firebaseConfig.ts
 # generated native folders
 /ios
 /android
+
+# assets
+/assets/sanasto.json
