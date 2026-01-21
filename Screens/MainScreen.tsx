@@ -55,7 +55,7 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onLogout, onGoToSignup })
       {!user.isGuest && (
         <View style={styles.userInfo}>
           <Text style={styles.userId}>User ID: {user.uid}</Text>
-          <Text style={styles.firebaseNote}>AUthenticated Firebasella</Text>
+          <Text style={styles.firebaseNote}>Authenticated Firebasella</Text>
         </View>
       )}
       

@@ -5,6 +5,7 @@ import { RootStackParamList } from '../types/navigation'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SweFin'>
 
+
 export default function SweFin(_: Props) {
   return (
     <View style={styles.container}>
