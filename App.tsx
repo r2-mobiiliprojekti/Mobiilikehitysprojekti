@@ -10,6 +10,8 @@ import SweFin from './Screens/SweFin';
 import ConnectWords from './Screens/ConnectWords';
 import PickWord from './Screens/PickWord';
 import MainScreen from './Screens/MainScreen';
+import { RootStackParamList, AuthStackParamList, MainAppStackParamList } from './types/navigation';
+
 import { 
   getCurrentUser, 
   onAuthStateChange,
@@ -18,9 +20,9 @@ import {
   AppUser 
 } from './services/firebaseService';
 
-const RootStack = createNativeStackNavigator();
-const AuthStack = createNativeStackNavigator();
-const MainAppStack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator<RootStackParamList>()
+const AuthStack = createNativeStackNavigator<AuthStackParamList>()
+const MainAppStack = createNativeStackNavigator<MainAppStackParamList>()
 
 function AuthNavigator({ onGuestLogin }: { onGuestLogin: () => void }) {
   return (
