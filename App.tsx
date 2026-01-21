@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginScreen from './Screens/LoginScreen';
-import SignupScreen from './Screens/SignupScreen';
-import HomeScreen from './Screens/HomeScreen';
-import FinSwe from './Screens/FinSwe';
-import SweFin from './Screens/SweFin';
-import ConnectWords from './Screens/ConnectWords';
-import PickWord from './Screens/PickWord';
-import MainScreen from './Screens/MainScreen';
+import LoginScreen from './screens/LoginScreen';
+import SignupScreen from './screens/SignupScreen';
+import HomeScreen from './screens/HomeScreen';
+import FinSwe from './screens/FinSwe';
+import SweFin from './screens/SweFin';
+import ConnectWords from './screens/ConnectWords';
+import PickWord from './screens/PickWord';
+import MainScreen from './screens/MainScreen';
 import { 
   getCurrentUser, 
   onAuthStateChange,
