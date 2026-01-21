@@ -110,6 +110,7 @@ function MainAppNavigator() {
   );
 }
 
+const Stack = createNativeStackNavigator()
 export default function App() {
   const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
