@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   StyleSheet
 } from 'react-native';
-import { logout } from '../services/firebaseService';
+import { logout } from '../Services/firebaseService';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
+import { RootStackParamList } from '../Types/navigation';
 
 type MainScreenProps = {
   user: {

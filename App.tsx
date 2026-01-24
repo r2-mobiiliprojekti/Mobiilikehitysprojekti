@@ -10,7 +10,7 @@ import SweFin from './Screens/SweFin';
 import ConnectWords from './Screens/ConnectWords';
 import PickWord from './Screens/PickWord';
 import MainScreen from './Screens/MainScreen';
-import { RootStackParamList, AuthStackParamList, MainAppStackParamList } from './types/navigation';
+import { RootStackParamList, AuthStackParamList, MainAppStackParamList } from './Types/navigation';
 
 import { 
   getCurrentUser, 
@@ -18,7 +18,7 @@ import {
   setGuestMode,
   getStoredUser,
   AppUser 
-} from './services/firebaseService';
+} from './Services/firebaseService';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 const AuthStack = createNativeStackNavigator<AuthStackParamList>()

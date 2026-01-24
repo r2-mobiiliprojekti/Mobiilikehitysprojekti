@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator
 } from 'react-native';
-import { loginWithEmail } from '../services/firebaseService';
+import { loginWithEmail } from '../Services/firebaseService';
 
 type LoginScreenProps = {
   onLoginSuccess: () => void;

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { MainAppStackParamList } from '../types/navigation'
+import { MainAppStackParamList } from '../Types/navigation'
 
 type Props = NativeStackScreenProps<MainAppStackParamList, 'SweFin'>
 

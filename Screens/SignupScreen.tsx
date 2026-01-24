@@ -8,7 +8,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 {/*VAIHDA POLKU TSETIN JÄLKEEN*/}
-import { signupWithEmail } from '../services/firebaseService';
+import { signupWithEmail } from '../Services/firebaseService';
 
 type SignupScreenProps = {
   onSignupSuccess: () => void;
