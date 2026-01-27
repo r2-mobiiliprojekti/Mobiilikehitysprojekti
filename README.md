@@ -1,6 +1,8 @@
 # Mobiilikehitysprojekti
 Mobiilikehitysprojekti IN00ED17-3003
 
+Käyttöliittymä suunnitelma: https://app.moqups.com/9wehYISvBnH80ExfkC6m5IitRRZGsKkb/view/page/a7bc758b4
+
 Packages:
 
 ├── @react-native-async-storage/async-storage@2.2.0
