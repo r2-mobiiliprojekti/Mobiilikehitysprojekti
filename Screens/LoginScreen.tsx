@@ -8,6 +8,8 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { loginWithEmail } from '../Services/firebaseService';
+import { useTheme } from '../Contexts/ThemeContext';
+import ThemeToggle from '../Components/ThemeToggle';
 
 type LoginScreenProps = {
   onLoginSuccess: () => void;
@@ -24,6 +26,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { isDark } = useTheme();
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -44,9 +47,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
     }
   };
 
+  const styles = createStyles(isDark);
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
+        {/* Theme Toggle at the top right */}
+        <View style={styles.themeToggleContainer}>
+          <ThemeToggle />
+        </View>
+        
         <Text style={styles.title}>Kirjaudu sisään</Text>
         <Text style={styles.subtitle}>Kirjaudu sisään, luo tili tai käytä vierastilaa!</Text>
         
@@ -55,6 +65,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
         <TextInput
           style={styles.input}
           placeholder="Syötä sähköposti"
+          placeholderTextColor={isDark ? '#888' : '#666'}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -65,6 +76,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
         <TextInput
           style={styles.input}
           placeholder="Syötä salasana"
+          placeholderTextColor={isDark ? '#888' : '#666'}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -107,11 +119,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
   );
 };
 
-//värit kopsattu facebookista ja googlelta
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: isDark ? '#121212' : '#f5f5f5',
     paddingTop: 50,
   },
   content: {
@@ -119,35 +130,42 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
   },
+  themeToggleContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    zIndex: 10,
+  },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: isDark ? '#FFFFFF' : '#333',
     textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: isDark ? '#BBBBBB' : '#666',
     textAlign: 'center',
     marginBottom: 40,
   },
   error: {
-    color: 'red',
-    backgroundColor: '#ffebee',
+    color: '#FF6B6B',
+    backgroundColor: isDark ? '#2A2A2A' : '#ffebee',
     padding: 12,
     borderRadius: 8,
     marginBottom: 20,
     textAlign: 'center',
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: isDark ? '#2A2A2A' : 'white',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: isDark ? '#444' : '#ddd',
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
     marginBottom: 15,
+    color: isDark ? '#FFFFFF' : '#333',
   },
   loginButton: {
     backgroundColor: '#2196F3',
@@ -157,7 +175,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   disabledButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: isDark ? '#555' : '#ccc',
   },
   loginButtonText: {
     color: 'white',
@@ -165,7 +183,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   signupButton: {
-    backgroundColor: 'white',
+    backgroundColor: isDark ? '#2A2A2A' : 'white',
     borderWidth: 1,
     borderColor: '#2196F3',
     borderRadius: 8,
@@ -191,7 +209,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   note: {
-    color: '#666',
+    color: isDark ? '#888' : '#666',
     fontSize: 14,
     textAlign: 'center',
     marginTop: 20,

@@ -3,12 +3,15 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  ScrollView
 } from 'react-native';
 import { logout } from '../Services/firebaseService';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../Types/navigation';
+import { useTheme } from '../Contexts/ThemeContext';
+import ThemeToggle from '../Components/ThemeToggle';
 
 type MainScreenProps = {
   user: {
@@ -22,6 +25,7 @@ type MainScreenProps = {
 
 const MainScreen: React.FC<MainScreenProps> = ({ user, onLogout, onGoToSignup }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { isDark } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -32,7 +36,6 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onLogout, onGoToSignup })
       console.error('Virhe kirjautuessa:', error);
     } finally {
       onLogout();
-      // Navigate back to Auth stack
       navigation.navigate('Auth');
     }
   };
@@ -42,64 +45,89 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onLogout, onGoToSignup })
     navigation.navigate('Auth');
   };
 
+  const styles = createStyles(isDark);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.welcomeText}>
-        Tervetuloa, {user.email}!
-      </Text>
-
-      <Text style={styles.userType}>
-        {user.isGuest ? 'Vierailija' : 'Rekisteröitynyt käyttäjä'}
-      </Text>
-      
-      {!user.isGuest && (
-        <View style={styles.userInfo}>
-          <Text style={styles.userId}>User ID: {user.uid}</Text>
-          <Text style={styles.firebaseNote}>Authenticated Firebasella</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        {/* Theme Toggle at the top */}
+        <View style={styles.themeToggleContainer}>
+          <ThemeToggle />
         </View>
-      )}
-      
-      
-      <TouchableOpacity 
-        style={[styles.backButton, { marginBottom: 20 }]} 
-        onPress={() => navigation.navigate('MainApp')}
-      >
-        <Text style={styles.backButtonText}>Takaisin harjoitteluun</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutButtonText}>
-          {user.isGuest ? 'Takaisin kirjautumiseen' : 'Kirjaudu ulos'}
+        
+        <Text style={styles.welcomeText}>
+          Tervetuloa, {user.email}!
         </Text>
-      </TouchableOpacity>
-    </View>
+
+        <Text style={styles.userType}>
+          {user.isGuest ? 'Vierailija' : 'Rekisteröitynyt käyttäjä'}
+        </Text>
+        
+        {!user.isGuest && (
+          <View style={styles.userInfo}>
+            <Text style={styles.userId}>User ID: {user.uid}</Text>
+            <Text style={styles.firebaseNote}>Authenticated Firebasella</Text>
+          </View>
+        )}
+        
+        {user.isGuest && (
+          <TouchableOpacity style={styles.upgradeButton} onPress={goToSignup}>
+            <Text style={styles.upgradeButtonText}>Luo tili</Text>
+          </TouchableOpacity>
+        )}
+        
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => navigation.navigate('MainApp')}
+        >
+          <Text style={styles.backButtonText}>Takaisin harjoitteluun</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>
+            {user.isGuest ? 'Takaisin kirjautumiseen' : 'Kirjaudu ulos'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: isDark ? '#121212' : '#f5f5f5',
     paddingTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    minHeight: '100%',
+  },
+  themeToggleContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 10,
   },
   welcomeText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: isDark ? '#FFFFFF' : '#333',
     marginBottom: 10,
     textAlign: 'center',
+    marginTop: 40,
   },
   userType: {
     fontSize: 20,
-    color: '#666',
+    color: isDark ? '#BBBBBB' : '#666',
     marginBottom: 30,
     textAlign: 'center',
   },
   userInfo: {
-    backgroundColor: 'white',
+    backgroundColor: isDark ? '#2A2A2A' : 'white',
     padding: 20,
     borderRadius: 10,
     marginBottom: 30,
@@ -108,13 +136,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: isDark ? 0.3 : 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
   userId: {
     fontSize: 14,
-    color: '#666',
+    color: isDark ? '#BBBBBB' : '#666',
     fontFamily: 'monospace',
     marginBottom: 10,
     textAlign: 'center',
@@ -124,6 +152,20 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     fontWeight: '600',
   },
+  upgradeButton: {
+    backgroundColor: '#FF9800',
+    borderRadius: 8,
+    padding: 16,
+    width: '100%',
+    maxWidth: 300,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  upgradeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   backButton: {
     backgroundColor: '#2196F3',
     borderRadius: 8,
@@ -131,6 +173,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 300,
     alignItems: 'center',
+    marginBottom: 20,
   },
   backButtonText: {
     color: 'white',
@@ -144,6 +187,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 300,
     alignItems: 'center',
+    marginBottom: 40,
   },
   logoutButtonText: {
     color: 'white',

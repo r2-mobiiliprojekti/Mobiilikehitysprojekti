@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './Screens/LoginScreen';
 import SignupScreen from './Screens/SignupScreen';
@@ -16,9 +16,9 @@ import {
   getCurrentUser, 
   onAuthStateChange,
   setGuestMode,
-  getStoredUser,
   AppUser 
 } from './Services/firebaseService';
+import { ThemeProvider, useTheme } from './Contexts/ThemeContext';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 const AuthStack = createNativeStackNavigator<AuthStackParamList>()
@@ -52,6 +52,8 @@ function AuthNavigator({ onGuestLogin }: { onGuestLogin: () => void }) {
 }
 
 function MainAppNavigator() {
+  const { isDark } = useTheme();
+  
   return (
     <MainAppStack.Navigator initialRouteName="Home">
       <MainAppStack.Screen 
@@ -60,9 +62,9 @@ function MainAppNavigator() {
         options={{ 
           title: 'Kieliharjoittelija',
           headerStyle: {
-            backgroundColor: '#ffe600',
+            backgroundColor: isDark ? '#1a1a1a' : '#ffe600',
           },
-          headerTintColor: '#000',
+          headerTintColor: isDark ? '#fff' : '#000',
           headerTitleStyle: {
             fontWeight: 'bold',
           },
@@ -74,8 +76,9 @@ function MainAppNavigator() {
         options={{ 
           title: 'Suomi → Ruotsi',
           headerStyle: {
-            backgroundColor: '#f5f5f5',
+            backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5',
           },
+          headerTintColor: isDark ? '#fff' : '#000',
         }} 
       />
       <MainAppStack.Screen 
@@ -84,8 +87,9 @@ function MainAppNavigator() {
         options={{ 
           title: 'Ruotsi → Suomi',
           headerStyle: {
-            backgroundColor: '#f5f5f5',
+            backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5',
           },
+          headerTintColor: isDark ? '#fff' : '#000',
         }} 
       />
       <MainAppStack.Screen 
@@ -94,8 +98,9 @@ function MainAppNavigator() {
         options={{ 
           title: 'Yhdistä sanat',
           headerStyle: {
-            backgroundColor: '#f5f5f5',
+            backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5',
           },
+          headerTintColor: isDark ? '#fff' : '#000',
         }} 
       />
       <MainAppStack.Screen 
@@ -104,15 +109,42 @@ function MainAppNavigator() {
         options={{ 
           title: 'Valitse oikea sana',
           headerStyle: {
-            backgroundColor: '#f5f5f5',
+            backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5',
           },
+          headerTintColor: isDark ? '#fff' : '#000',
         }} 
       />
     </MainAppStack.Navigator>
   );
 }
 
-export default function App() {
+// Loading Component
+function LoadingScreen() {
+  const { isDark } = useTheme();
+  
+  return (
+    <View style={{ 
+      flex: 1, 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      backgroundColor: isDark ? '#121212' : '#f5f5f5' 
+    }}>
+      <ActivityIndicator size="large" color={isDark ? '#BB86FC' : '#2196F3'} />
+      <Text style={{ 
+        marginTop: 20, 
+        fontSize: 16, 
+        color: isDark ? '#E0E0E0' : '#666' 
+      }}>
+        Ladataan...
+      </Text>
+    </View>
+  );
+}
+
+// Main App Component
+function AppContent() {
+  const { isDark } = useTheme();
+  
   const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -123,14 +155,12 @@ export default function App() {
       console.log('Starting app initialization...');
       
       try {
-        //auth listeneri ENSIN!
         unsubscribe = onAuthStateChange((user) => {
           console.log('Auth state change callback:', user?.email || 'null');
           setCurrentUser(user);
           setIsLoading(false);
         });
 
-        //hae listener
         const user = getCurrentUser();
         console.log('Initial getCurrentUser:', user?.email || 'null');
         
@@ -138,7 +168,6 @@ export default function App() {
           setCurrentUser(user);
           setIsLoading(false);
         } else {
-          //wenaa sekka
           setTimeout(() => {
             if (!currentUser) {
               setIsLoading(false);
@@ -178,16 +207,11 @@ export default function App() {
   };
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f5f5f5' }}>
-        <ActivityIndicator size="large" color="#2196F3" />
-        <Text style={{ marginTop: 20, fontSize: 16, color: '#666' }}>Ladataan...</Text>
-      </View>
-    );
+    return <LoadingScreen />;
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
       {currentUser ? (
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
           <RootStack.Screen name="MainApp">
@@ -211,5 +235,14 @@ export default function App() {
         </RootStack.Navigator>
       )}
     </NavigationContainer>
+  );
+}
+
+// Main App wrapper
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }

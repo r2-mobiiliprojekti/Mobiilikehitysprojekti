@@ -7,8 +7,8 @@ import {
   StyleSheet,
   ActivityIndicator
 } from 'react-native';
-{/*VAIHDA POLKU TSETIN JÄLKEEN*/}
 import { signupWithEmail } from '../Services/firebaseService';
+import { useTheme } from '../Contexts/ThemeContext';
 
 type SignupScreenProps = {
   onSignupSuccess: () => void;
@@ -21,15 +21,13 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onSignupSuccess, onGoToLogi
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { isDark } = useTheme();
 
-
-  {/*singup formi*/}
   const validateForm = () => {
     if (!email.trim() || !password || !confirmPassword) {
       return 'Täytä kaikki kentät';
     }
     
-    {/*testaa spostin*/}
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       return 'Syötä toimiva sähköpostiosoite';
     }
@@ -65,6 +63,8 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onSignupSuccess, onGoToLogi
     }
   };
 
+  const styles = createStyles(isDark);
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -80,6 +80,7 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onSignupSuccess, onGoToLogi
         <TextInput
           style={styles.input}
           placeholder="Syötä sähköposti"
+          placeholderTextColor={isDark ? '#888' : '#666'}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -90,6 +91,7 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onSignupSuccess, onGoToLogi
         <TextInput
           style={styles.input}
           placeholder="Syötä salasana (vähintään 6 merkkiä)"
+          placeholderTextColor={isDark ? '#888' : '#666'}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -99,6 +101,7 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onSignupSuccess, onGoToLogi
         <TextInput
           style={styles.input}
           placeholder="Vahvista salasana"
+          placeholderTextColor={isDark ? '#888' : '#666'}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
@@ -128,10 +131,10 @@ const SignupScreen: React.FC<SignupScreenProps> = ({ onSignupSuccess, onGoToLogi
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: isDark ? '#121212' : '#f5f5f5',
     paddingTop: 50,
   },
   content: {
@@ -153,32 +156,33 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#333',
+    color: isDark ? '#FFFFFF' : '#333',
     textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: isDark ? '#BBBBBB' : '#666',
     textAlign: 'center',
     marginBottom: 40,
   },
   error: {
-    color: 'red',
-    backgroundColor: '#ffebee',
+    color: '#FF6B6B',
+    backgroundColor: isDark ? '#2A2A2A' : '#ffebee',
     padding: 12,
     borderRadius: 8,
     marginBottom: 20,
     textAlign: 'center',
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: isDark ? '#2A2A2A' : 'white',
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: isDark ? '#444' : '#ddd',
     borderRadius: 8,
     padding: 15,
     fontSize: 16,
     marginBottom: 15,
+    color: isDark ? '#FFFFFF' : '#333',
   },
   signupButton: {
     backgroundColor: '#2196F3',
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   disabledButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: isDark ? '#555' : '#ccc',
   },
   signupButtonText: {
     color: 'white',
@@ -202,7 +206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginText: {
-    color: '#666',
+    color: isDark ? '#BBBBBB' : '#666',
     fontSize: 14,
   },
   loginLink: {
