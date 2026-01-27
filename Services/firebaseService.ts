@@ -8,7 +8,7 @@ import {
   User as FirebaseUser
 } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { firebaseConfig } from '../example_firebaseConfig';
+import { firebaseConfig } from '../firebaseConfig';
 
 //storage keys
 const USER_STORAGE_KEY = '@user_data';
