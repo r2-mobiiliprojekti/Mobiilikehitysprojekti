@@ -28,7 +28,7 @@ useEffect(() => {
         data.word,
         ...data.entries.flatMap(entry => 
           entry.forms?.filter(form => 
-            !form.tags?.some(tag => tag === "table-tags" || tag === "inflection-template")
+            !form.tags?.some(tag => tag === "table-tags" || tag === "inflection-template" || tag === "sv-adj-reg"
           ).map(form => form.word) || []
         )
       ]
