@@ -1,6 +1,6 @@
 //Oikea config
 
-/*
+
 
 export const firebaseConfig = {
   apiKey: "",
@@ -13,18 +13,7 @@ export const firebaseConfig = {
   //measurementId: "MEASUREMENT_ID_HERE"
 };
 
-*/
 
-export const firebaseConfig = {
-  apiKey: "AIzaSyCphUKpbWoiyNboLSK6T1ZgIQGEI-eNUDw",
-  authDomain: "mobiilitesti-119d9.firebaseapp.com",
-  databaseURL: "https://mobiilitesti-119d9-default-rtdb.firebaseio.com",
-  projectId: "mobiilitesti-119d9",
-  storageBucket: "mobiilitesti-119d9.firebasestorage.app",
-  messagingSenderId: "106438525753",
-  appId: "1:106438525753:web:a33e426fc9f1e40272dee8",
-  measurementId: "G-LW3YV5LFJP"
-};
 
 //Demoa varten
 export const demoConfig = {
