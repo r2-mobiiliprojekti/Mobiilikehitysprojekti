@@ -1,27 +1,70 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { MainAppStackParamList } from '../Types/navigation'
-import { getRandomWord, isCorrect } from '../Services/sanastoService'
+import { getRandomSwedishWord, isCorrectFinnish } from '../Services/sanastoService'
 import type { Sanasto } from '../Types/sanasto'
+import { getWord } from '../api/Freedict/fetcher'
 
 
 export type Props = NativeStackScreenProps<MainAppStackParamList, 'FinSwe'>
 
 export default function FinSwe({ navigation }: Props) {
-  const [entry, setEntry] = useState<Sanasto>(getRandomWord())
+  const [entry, setEntry] = useState<Sanasto>(getRandomSwedishWord())
   const [answer, setAnswer] = useState('')
   const [result, setResult] = useState<boolean | null>(null)
 
   const accepted = entry.translations.join(', ')
 
+  const [words, setWords] = useState<string[]>([]);
+
+
+  // API
+  useEffect(() => {
+    const fetchFreedict = async () => {
+      try {
+        const data = await getWord('sv', entry.swedish);
+        const words = [
+          data.word,
+          ...data.entries.flatMap(entry =>
+            entry.forms?.filter(form =>
+              !form.tags?.some(tag => tag === "table-tags" || tag === "inflection-template" || tag === "sv-adj-reg")
+            ).map(form => form.word) || []
+          )
+        ]
+        //.slice(0, 3);
+
+        console.log(words);
+        const uniqueWords = Array.from(new Set(words));
+        setWords(uniqueWords);
+
+
+
+
+      } catch (err) {
+        console.log(err);
+        //setError('Failed to fetch freedict data')
+      } finally {
+        //setLoading(false);
+      }
+    };
+
+
+
+    fetchFreedict();
+  }, [entry]);
+  // API LOPPU
+
+
+
+
   function checkAnswer() {
     if (!answer.trim()) return
-    setResult(isCorrect(entry, answer))
+    setResult(isCorrectFinnish(entry, answer))
   }
 
   function nextWord() {
-    setEntry(getRandomWord())
+    setEntry(getRandomSwedishWord())
     setAnswer('')
     setResult(null)
   }
@@ -29,6 +72,7 @@ export default function FinSwe({ navigation }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Käännä suomeksi</Text>
+
 
       <View style={styles.card}>
         <Text style={styles.word}>{entry.swedish}</Text>
@@ -70,8 +114,13 @@ export default function FinSwe({ navigation }: Props) {
             <Text>Ruotsiksi: {entry.examples.sv[0]}</Text>
             <Text>Suomeksi: {entry.examples.fi[0]}</Text>
           </View>
+
         )}
+
       </View>
+      {words.length > 1 && (
+        <Text style={styles.meta}>Sanat: {words.join(', ')}</Text>
+      )}
     </View>
   )
 }
