@@ -35,8 +35,8 @@ useEffect(() => {
       //.slice(0, 3);
       
       console.log(words);
-      const uniqueWords = Array.from(new Set(words));
-      setWords(uniqueWords);
+      //const uniqueWords = Array.from(new Set(words));
+      setWords(words);
       
       
       
@@ -120,7 +120,7 @@ useEffect(() => {
       </View>
       {/* API DATA DISPLAY */}
       {words.length > 1 && (
-  <Text style={styles.meta}>Sanat: {words.join(', ')}</Text>
+  <Text style={styles.meta}>Taivutusmuodot: {words.join(', ')}</Text>
 )}
     </View>
   )
