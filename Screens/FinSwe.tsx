@@ -35,11 +35,8 @@ export default function FinSwe({ navigation }: Props) {
         //.slice(0, 3);
 
         console.log(words);
-        const uniqueWords = Array.from(new Set(words));
-        setWords(uniqueWords);
-
-
-
+        //const uniqueWords = Array.from(new Set(words));
+        setWords(words);
 
       } catch (err) {
         console.log(err);
@@ -48,14 +45,9 @@ export default function FinSwe({ navigation }: Props) {
         //setLoading(false);
       }
     };
-
-
-
     fetchFreedict();
   }, [entry]);
   // API LOPPU
-
-
 
 
   function checkAnswer() {
