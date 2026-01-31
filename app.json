@@ -27,7 +27,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "@react-native-firebase/auth"
+      "@react-native-firebase/auth",
+      "expo-sqlite"
     ]
   }
 }

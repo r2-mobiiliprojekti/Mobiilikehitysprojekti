@@ -11,14 +11,9 @@ import ConnectWords from './Screens/ConnectWords';
 import PickWord from './Screens/PickWord';
 import MainScreen from './Screens/MainScreen';
 import { RootStackParamList, AuthStackParamList, MainAppStackParamList } from './Types/navigation';
+import { getCurrentUser, onAuthStateChange, setGuestMode, getStoredUser, AppUser } from './Services/firebaseService';
+import * as SQLite from 'expo-sqlite'
 
-import { 
-  getCurrentUser, 
-  onAuthStateChange,
-  setGuestMode,
-  getStoredUser,
-  AppUser 
-} from './Services/firebaseService';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 const AuthStack = createNativeStackNavigator<AuthStackParamList>()
@@ -115,6 +110,26 @@ function MainAppNavigator() {
 export default function App() {
   const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [db,setDb] = useState<SQLite.SQLiteDatabase | null>(null);
+
+
+  useEffect(() => {
+    const initDb = async () => {
+      const database = await SQLite.openDatabaseAsync('tilastot.db')
+      setDb(database)
+      console.log('Database initialized...')
+      await database.execAsync(`
+    CREATE TABLE IF NOT EXISTS numero (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      num INTEGER NOT NULL
+    )
+    `);
+    }
+    initDb()
+  }, [])
+
+  
+  
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;

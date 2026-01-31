@@ -17,6 +17,7 @@
     "expo": "~54.0.31",
     "expo-firebase-app": "^2.0.0",
     "expo-firebase-auth": "^2.0.0",
+    "expo-sqlite": "~16.0.10",
     "firebase": "^12.8.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
