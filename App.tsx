@@ -13,6 +13,7 @@ import MainScreen from './Screens/MainScreen';
 import { RootStackParamList, AuthStackParamList, MainAppStackParamList } from './Types/navigation';
 import { getCurrentUser, onAuthStateChange, setGuestMode, getStoredUser, AppUser } from './Services/firebaseService';
 import * as SQLite from 'expo-sqlite'
+import { DbContext } from './Services/databaseService';
 
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
@@ -119,9 +120,10 @@ export default function App() {
       setDb(database)
       console.log('Database initialized...')
       await database.execAsync(`
-    CREATE TABLE IF NOT EXISTS numero (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      num INTEGER NOT NULL
+      CREATE TABLE IF NOT EXISTS wrong_words (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        word TEXT NOT NULL,
+        created_at TEXT NOT NULL
     )
     `);
     }
@@ -202,6 +204,7 @@ export default function App() {
   }
 
   return (
+      <DbContext.Provider value={db}>
     <NavigationContainer>
       {currentUser ? (
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -226,5 +229,6 @@ export default function App() {
         </RootStack.Navigator>
       )}
     </NavigationContainer>
+    </DbContext.Provider>
   );
 }
