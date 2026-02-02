@@ -34,12 +34,12 @@ export default function FinSwe({ navigation }: Props) {
         ]
         //.slice(0, 3);
 
-        console.log(words);
+        console.log(words)
         //const uniqueWords = Array.from(new Set(words));
-        setWords(words);
+        setWords(words)
 
       } catch (err) {
-        console.log(err);
+        console.log(err)
         //setError('Failed to fetch freedict data')
       } finally {
         //setLoading(false);
