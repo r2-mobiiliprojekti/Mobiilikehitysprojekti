@@ -34,28 +34,20 @@ export default function FinSwe({ navigation }: Props) {
         ]
         //.slice(0, 3);
 
-        console.log(words);
-        const uniqueWords = Array.from(new Set(words));
-        setWords(uniqueWords);
-
-
-
+        console.log(words)
+        //const uniqueWords = Array.from(new Set(words));
+        setWords(words)
 
       } catch (err) {
-        console.log(err);
+        console.log(err)
         //setError('Failed to fetch freedict data')
       } finally {
         //setLoading(false);
       }
     };
-
-
-
     fetchFreedict();
   }, [entry]);
   // API LOPPU
-
-
 
 
   function checkAnswer() {
@@ -119,8 +111,8 @@ export default function FinSwe({ navigation }: Props) {
 
       </View>
       {words.length > 1 && (
-        <Text style={styles.meta}>Sanat: {words.join(', ')}</Text>
-      )}
+  <Text style={styles.meta}>Taivutusmuodot: {words.join(', ')}</Text>
+)}
     </View>
   )
 }

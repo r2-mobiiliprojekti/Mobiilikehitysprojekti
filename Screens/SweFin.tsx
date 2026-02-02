@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { MainAppStackParamList } from '../Types/navigation'
 import { getRandomSwedishWord, getRandomFinnishTranslation, isCorrectSwedish } from '../Services/sanastoService'
 import type { Sanasto } from '../Types/sanasto'
+import { getWord } from '../api/Freedict/fetcher'
 
 export type Props = NativeStackScreenProps<MainAppStackParamList, 'SweFin'>
 
@@ -13,6 +14,7 @@ export default function FinSwe({ navigation }: Props) {
      getRandomFinnishTranslation(entry))
   const [answer, setAnswer] = useState('')
   const [result, setResult] = useState<boolean | null>(null)
+  const [words, setWords] = useState<string[]>([]);
 
   const accepted = entry.swedish
 
@@ -28,6 +30,42 @@ export default function FinSwe({ navigation }: Props) {
     setAnswer('')
     setResult(null)
   }
+
+
+  // API
+  useEffect(() => {
+    const fetchFreedict = async () => {
+      try {
+        const data = await getWord('fi', finWord);
+        const words = [
+          data.word,
+          ...data.entries.flatMap(entry =>
+            entry.forms?.filter(form =>
+              !form.tags?.some(tag => tag === "table-tags" || tag === "inflection-template" || tag === "fi-adj-reg")
+            ).map(form => form.word) || []
+          )
+        ]
+        const lisasanojapois = "gradation"
+        
+        const lisafiltteri = words.filter(item =>
+          !/\d/.test(item) && !item.toLowerCase().includes(lisasanojapois.toLowerCase())
+        )
+        const uniquewords = Array.from(new Set(lisafiltteri))
+        console.log(uniquewords);
+        setWords(uniquewords.slice(0, 5));
+
+      } catch (err) {
+        console.log(err);
+        //setError('Failed to fetch freedict data')
+      } finally {
+        //setLoading(false);
+      }
+    };
+    fetchFreedict();
+  }, [entry]);
+  // API LOPPU
+
+
 
   return (
     <View style={styles.container}>
@@ -73,6 +111,7 @@ export default function FinSwe({ navigation }: Props) {
           </View>
         )}
       </View>
+      <Text style={styles.meta}>Taivutusmuotoja: {words.join(', ')}</Text>
     </View>
   )
 }
