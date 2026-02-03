@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { View, Text, StyleSheet, TextInput, Pressable } from 'react-native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { MainAppStackParamList } from '../Types/navigation'
 import { getRandomSwedishWord, isCorrectFinnish } from '../Services/sanastoService'
 import type { Sanasto } from '../Types/sanasto'
 import { getWord } from '../api/Freedict/fetcher'
+import { DbContext } from '../Services/databaseService'
+import { saveWrongWord } from '../Services/wrongWordService'
 
 
 export type Props = NativeStackScreenProps<MainAppStackParamList, 'FinSwe'>
@@ -13,10 +15,10 @@ export default function FinSwe({ navigation }: Props) {
   const [entry, setEntry] = useState<Sanasto>(getRandomSwedishWord())
   const [answer, setAnswer] = useState('')
   const [result, setResult] = useState<boolean | null>(null)
-
   const accepted = entry.translations.join(', ')
-
   const [words, setWords] = useState<string[]>([]);
+  const db = useContext(DbContext);
+
 
 
   // API
@@ -50,16 +52,35 @@ export default function FinSwe({ navigation }: Props) {
   // API LOPPU
 
 
-  function checkAnswer() {
-    if (!answer.trim()) return
-    setResult(isCorrectFinnish(entry, answer))
-  }
 
-  function nextWord() {
-    setEntry(getRandomSwedishWord())
-    setAnswer('')
-    setResult(null)
+
+async function checkAnswer() {
+  if (!answer.trim()) return;
+
+const ok = isCorrectFinnish(entry, answer);
+setResult(ok);
+
+  if (!ok) {
+    if (!db) {
+      console.log('Database not initialized');
+      return;
+    }
+    await saveWrongWord(db, entry.swedish);
+    console.log('Wrong word saved to database')
+
+const rows = await db.getAllAsync(`SELECT COUNT(*) as c FROM wrong_words;`);
+console.log("Wrong words count:", rows);
+
   }
+}
+
+
+
+function nextWord() {
+  setEntry(getRandomSwedishWord());
+  setAnswer('');
+  setResult(null);
+}
 
   return (
     <View style={styles.container}>
