@@ -2,10 +2,15 @@ import { View, Text, StyleSheet, Pressable } from 'react-native'
 import React from 'react'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { MainAppStackParamList } from '../Types/navigation'
+import { useTheme } from '../Contexts/ThemeContext'
 
 type Props = NativeStackScreenProps<MainAppStackParamList, 'Home'>
 
 export default function HomeScreen({ navigation }: Props) {
+  const { isDark } = useTheme()
+  
+  const styles = createStyles(isDark)
+
   return (
     <View style={styles.container}>
       <Pressable onPress={() => navigation.navigate('FinSwe')} style={styles.button}>
@@ -34,12 +39,12 @@ export default function HomeScreen({ navigation }: Props) {
   )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffe600',
+    backgroundColor: isDark ? '#121212' : '#ffe600',
     gap: 16,
     padding: 20,
   },
@@ -47,13 +52,18 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 300,
     height: 80,
-    backgroundColor: '#1612ee',
+    backgroundColor: isDark ? '#333' : '#1612ee',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: isDark ? 0.3 : 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   profileButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: isDark ? '#4CAF50' : '#4CAF50',
     marginTop: 30,
   },
   buttonText: {
