@@ -30,6 +30,11 @@ export default function HomeScreen({ navigation }: Props) {
       >
         <Text style={styles.buttonText}>Profiili</Text>
       </Pressable>
+
+      <Pressable
+       onPress={() => navigation.navigate('Stats')} style={styles.button}>
+       <Text style={styles.buttonText}>Tilastot</Text>
+      </Pressable>
     </View>
   )
 }

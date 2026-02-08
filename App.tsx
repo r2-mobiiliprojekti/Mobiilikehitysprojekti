@@ -14,7 +14,7 @@ import { RootStackParamList, AuthStackParamList, MainAppStackParamList } from '.
 import { getCurrentUser, onAuthStateChange, setGuestMode, getStoredUser, AppUser } from './Services/firebaseService';
 import * as SQLite from 'expo-sqlite'
 import { DbContext } from './Services/databaseService';
-
+import Stats from './Screens/StatsScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 const AuthStack = createNativeStackNavigator<AuthStackParamList>()
@@ -102,7 +102,18 @@ function MainAppNavigator() {
           headerStyle: {
             backgroundColor: '#f5f5f5',
           },
-        }} 
+        }}
+        />
+
+      <MainAppStack.Screen 
+        name="Stats" 
+        component={Stats} 
+        options={{ 
+          title: 'Tilastot',
+          headerStyle: {
+            backgroundColor: '#f5f5f5',
+          },
+        }}
       />
     </MainAppStack.Navigator>
   );
@@ -119,12 +130,19 @@ export default function App() {
       const database = await SQLite.openDatabaseAsync('tilastot.db')
       setDb(database)
       console.log('Database initialized...')
+
       await database.execAsync(`
       CREATE TABLE IF NOT EXISTS wrong_words (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         word TEXT NOT NULL,
-        created_at TEXT NOT NULL
-    )
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+
+      CREATE TABLE IF NOT EXISTS correct_words (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        word TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
     `);
     }
     initDb()
