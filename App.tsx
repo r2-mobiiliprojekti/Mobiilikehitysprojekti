@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ActivityIndicator, View, Text } from 'react-native';
+import { ActivityIndicator, View, Text, SafeAreaView } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Notifications from 'expo-notifications';
 import LoginScreen from './Screens/LoginScreen';
 import SignupScreen from './Screens/SignupScreen';
 import HomeScreen from './Screens/HomeScreen';
@@ -10,7 +11,9 @@ import SweFin from './Screens/SweFin';
 import ConnectWords from './Screens/ConnectWords';
 import PickWord from './Screens/PickWord';
 import MainScreen from './Screens/MainScreen';
+import NotificationSettingsScreen from './Screens/NotificationSettingsScreen';
 import { RootStackParamList, AuthStackParamList, MainAppStackParamList } from './Types/navigation';
+
 
 import { 
   getCurrentUser, 
@@ -18,16 +21,40 @@ import {
   setGuestMode,
   AppUser 
 } from './Services/firebaseService';
+
+
 import { ThemeProvider, useTheme } from './Contexts/ThemeContext';
 
-const RootStack = createNativeStackNavigator<RootStackParamList>()
-const AuthStack = createNativeStackNavigator<AuthStackParamList>()
-const MainAppStack = createNativeStackNavigator<MainAppStackParamList>()
+
+import { registerForPushNotificationsAsync, createAndroidNotificationChannel } from './Services/notifications';
+import { setupNotificationChannel, loadNotificationSettings, scheduleDailyReminder } from './Services/notificationHelpers';
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+const AuthStack = createNativeStackNavigator<AuthStackParamList>();
+const MainAppStack = createNativeStackNavigator<MainAppStackParamList>();
 
 function AuthNavigator({ onGuestLogin }: { onGuestLogin: () => void }) {
+  const { isDark } = useTheme();
+  
   return (
     <AuthStack.Navigator 
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ 
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: isDark ? '#121212' : '#f5f5f5',
+        }
+      }}
       initialRouteName="Login"
     >
       <AuthStack.Screen name="Login">
@@ -114,11 +141,32 @@ function MainAppNavigator() {
           headerTintColor: isDark ? '#fff' : '#000',
         }} 
       />
+      <MainAppStack.Screen 
+        name="NotificationSettings" 
+        component={NotificationSettingsScreen} 
+        options={{ 
+          title: 'Ilmoitusasetukset',
+          headerStyle: {
+            backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5',
+          },
+          headerTintColor: isDark ? '#fff' : '#000',
+        }} 
+      />
     </MainAppStack.Navigator>
   );
 }
 
-// Loading Component
+function ProfileScreenWrapper({ route, navigation }: any) {
+  const { user, onLogout } = route.params;
+  return (
+    <MainScreen
+      user={user}
+      onLogout={onLogout}
+      onGoToSignup={() => {}}
+    />
+  );
+}
+
 function LoadingScreen() {
   const { isDark } = useTheme();
   
@@ -141,28 +189,60 @@ function LoadingScreen() {
   );
 }
 
-// Main App Component
 function AppContent() {
   const { isDark } = useTheme();
   
   const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [expoPushToken, setExpoPushToken] = useState<string>('');
+
+  useEffect(() => {
+    const initializeNotifications = async () => {
+      try {
+        console.log('🔔 Initializing notification system...');
+        
+        await createAndroidNotificationChannel();
+        await setupNotificationChannel();
+        
+        const token = await registerForPushNotificationsAsync();
+        if (token) {
+          setExpoPushToken(token);
+          console.log('✅ Push token obtained:', token);
+        }
+        
+        const settings = await loadNotificationSettings();
+        if (settings.enabled) {
+          await scheduleDailyReminder(settings.hour, settings.minute, {
+            repeats: settings.repeatDaily,
+            sound: settings.soundEnabled,
+            title: settings.title,
+            body: settings.body,
+          });
+          console.log('✅ Daily reminder scheduled from App.tsx');
+        }
+      } catch (error) {
+        console.error('❌ Error initializing notifications:', error);
+      }
+    };
+
+    initializeNotifications();
+  }, []);
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
 
     const initializeApp = async () => {
-      console.log('Starting app initialization...');
+      console.log('🚀 Starting app initialization...');
       
       try {
         unsubscribe = onAuthStateChange((user) => {
-          console.log('Auth state change callback:', user?.email || 'null');
+          console.log('👤 Auth state change callback:', user?.email || 'null');
           setCurrentUser(user);
           setIsLoading(false);
         });
 
         const user = getCurrentUser();
-        console.log('Initial getCurrentUser:', user?.email || 'null');
+        console.log('📱 Initial getCurrentUser:', user?.email || 'null');
         
         if (user) {
           setCurrentUser(user);
@@ -176,7 +256,7 @@ function AppContent() {
         }
         
       } catch (error) {
-        console.error('Error initializing app:', error);
+        console.error('❌ Error initializing app:', error);
         setIsLoading(false);
       }
     };
@@ -192,18 +272,18 @@ function AppContent() {
 
   const handleGuestLogin = async () => {
     try {
-      console.log('Handling guest login...');
+      console.log('👤 Handling guest login...');
       const guestUser = await setGuestMode();
-      console.log('Guest user created:', guestUser.email);
+      console.log('✅ Guest user created:', guestUser.email);
       setCurrentUser(guestUser);
     } catch (error) {
-      console.error('Error in guest login:', error);
+      console.error('❌ Error in guest login:', error);
     }
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    console.log('User logged out');
+    console.log('👋 User logged out');
   };
 
   if (isLoading) {
@@ -214,18 +294,23 @@ function AppContent() {
     <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
       {currentUser ? (
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
-          <RootStack.Screen name="MainApp">
-            {() => <MainAppNavigator />}
-          </RootStack.Screen>
-          <RootStack.Screen name="Profile">
-            {() => (
-              <MainScreen
-                user={currentUser}
-                onLogout={handleLogout}
-                onGoToSignup={() => {}}
-              />
-            )}
-          </RootStack.Screen>
+          <RootStack.Screen name="MainApp" component={MainAppNavigator} />
+          <RootStack.Screen 
+            name="Profile" 
+            component={ProfileScreenWrapper}
+            initialParams={{ 
+              user: currentUser, 
+              onLogout: handleLogout 
+            }}
+            options={{ 
+              headerShown: true, 
+              title: 'Profiili',
+              headerStyle: {
+                backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5',
+              },
+              headerTintColor: isDark ? '#fff' : '#000',
+            }}
+          />
         </RootStack.Navigator>
       ) : (
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -238,7 +323,6 @@ function AppContent() {
   );
 }
 
-// Main App wrapper
 export default function App() {
   return (
     <ThemeProvider>

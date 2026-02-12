@@ -29,6 +29,10 @@ export default function HomeScreen({ navigation }: Props) {
         <Text style={styles.buttonText}>Valitse oikea sana neljästä</Text>
       </Pressable>
 
+      <Pressable onPress={() => navigation.navigate('NotificationSettings')} style={styles.button}>
+        <Text style={styles.buttonText}>Ilmoitusasetukset</Text>
+      </Pressable>
+
       <Pressable 
         onPress={() => navigation.navigate('Profile')} 
         style={[styles.button, styles.profileButton]}

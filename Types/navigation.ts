@@ -16,4 +16,5 @@ export type RootStackParamList = {
     ConnectWords: undefined;
     PickWord: undefined;
     Profile: undefined;
+    NotificationSettings: undefined;
   };

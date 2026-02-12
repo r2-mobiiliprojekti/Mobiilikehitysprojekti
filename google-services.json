@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "106438525753",
+    "firebase_url": "https://mobiilitesti-119d9-default-rtdb.firebaseio.com",
+    "project_id": "mobiilitesti-119d9",
+    "storage_bucket": "mobiilitesti-119d9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106438525753:android:c06dd3a2c6ba53a472dee8",
+        "android_client_info": {
+          "package_name": "com.yourcompany.yourapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106438525753-he99u5atjlvttonqcuqd9gqnsmc5fd83.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdo04iD2I8iZbzt-U0SSYwFm4xYjnH9Vo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106438525753-he99u5atjlvttonqcuqd9gqnsmc5fd83.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
