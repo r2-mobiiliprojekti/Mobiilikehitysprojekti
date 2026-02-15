@@ -8,6 +8,7 @@ import { getWord } from '../api/Freedict/fetcher'
 import { DbContext } from '../Services/databaseService'
 import { saveWrongWord } from '../Services/wrongWordService'
 import { saveCorrectWord } from '../Services/correctWordService'
+import { updateStreak } from '../Services/streakService'
 
 
 export type Props = NativeStackScreenProps<MainAppStackParamList, 'FinSwe'>
@@ -79,7 +80,12 @@ console.log("Wrong words count:", rows);
 
 const rows2 = await db.getAllAsync(`SELECT COUNT(*) as c FROM correct_words;`);
 console.log("Correct answers count;", rows2);
-  }
+
+await updateStreak(db, ok)
+console.log("Streak updated:", ok ? "correct" : "wrong")
+const s = await db.getFirstAsync("SELECT * FROM user_stats WHERE id = 1")
+console.log("user_stats row now:", s)
+}
 
 
 

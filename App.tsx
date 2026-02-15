@@ -15,6 +15,7 @@ import { getCurrentUser, onAuthStateChange, setGuestMode, getStoredUser, AppUser
 import * as SQLite from 'expo-sqlite'
 import { DbContext } from './Services/databaseService';
 import Stats from './Screens/StatsScreen';
+import { getUserStats } from './Services/userStatsService';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 const AuthStack = createNativeStackNavigator<AuthStackParamList>()
@@ -133,22 +134,47 @@ export default function App() {
 
       await database.execAsync(`
       CREATE TABLE IF NOT EXISTS wrong_words (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id INTEGER PRIMARY KEY,
         word TEXT NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
-    );
+      );
 
       CREATE TABLE IF NOT EXISTS correct_words (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         word TEXT NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS user_stats (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      current_streak INTEGER DEFAULT 0,
+      best_streak INTEGER DEFAULT 0
+      );
     `);
+      
+      try {
+        await database.execAsync(`
+    ALTER TABLE user_stats ADD COLUMN current_wrong_streak INTEGER DEFAULT 0;
+  `);
+      } catch (e) {
+        console.log("current_wrong_streak already exists");
+      }
+
+      try {
+        await database.execAsync(`
+    ALTER TABLE user_stats ADD COLUMN worst_wrong_streak INTEGER DEFAULT 0;
+  `);
+      } catch (e) {
+        console.log("worst_wrong_streak already exists");
+      }
+
+
+      await getUserStats(database);
     }
     initDb()
   }, [])
 
-  
+
   
 
   useEffect(() => {
