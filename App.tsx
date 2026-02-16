@@ -271,6 +271,7 @@ function AppContent() {
   }
 
   return (
+    <DbContext.Provider value={db}>
     <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
       {currentUser ? (
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -295,6 +296,7 @@ function AppContent() {
         </RootStack.Navigator>
       )}
     </NavigationContainer>
+    </DbContext.Provider>
   );
 }
 

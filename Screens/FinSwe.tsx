@@ -11,6 +11,7 @@ import { saveCorrectWord } from '../Services/correctWordService'
 import { updateStreak } from '../Services/streakService'
 
 
+
 export type Props = NativeStackScreenProps<MainAppStackParamList, 'FinSwe'>
 
 export default function FinSwe({ navigation }: Props) {
@@ -20,6 +21,12 @@ export default function FinSwe({ navigation }: Props) {
   const accepted = entry.translations.join(', ')
   const [words, setWords] = useState<string[]>([]);
   const db = useContext(DbContext);
+  const dbReady = !!db;
+  useEffect(() => {
+  console.log("FinSwe db:", db ? "READY" : "NULL");
+}, [db]);
+
+
 
 
 
