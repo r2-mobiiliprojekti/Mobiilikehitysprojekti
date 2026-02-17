@@ -13,13 +13,13 @@ import type { Sanasto } from '../Types/sanasto'
 import { scheduleOnRN } from "react-native-worklets"
 import { Item, Layout, DragProps } from '../Types/connectwordtypes'
 import { usePlayAudioDing, usePlayAudioWrongBeep } from '../Services/audioService'
-
+import { useTheme } from '../Contexts/ThemeContext'
 
 type Props = NativeStackScreenProps<MainAppStackParamList, 'ConnectWords'>
 const { width } = Dimensions.get("window")
 
-
 export default function ConnectWords(_: Props) {
+  const { isDark } = useTheme()
   const [entry1, setEntry1] = useState<Sanasto>(getRandomSwedishWord())
   const [entry2, setEntry2] = useState<Sanasto>(getRandomSwedishWord())
   const [entry3, setEntry3] = useState<Sanasto>(getRandomSwedishWord())
@@ -27,6 +27,7 @@ export default function ConnectWords(_: Props) {
   const [matched, setMatched] = useState<number[]>([])
   const playDing = usePlayAudioDing()
   
+  const styles = createStyles(isDark)
 
   const handleMatch = useCallback((id: number) => {
     setMatched((prev) => [...prev, id])
@@ -49,7 +50,8 @@ export default function ConnectWords(_: Props) {
     { id: 2, SWE_word: entry2.swedish, FIN_word: entry2.translations},
     { id: 3, SWE_word: entry3.swedish, FIN_word: entry3.translations},
   ]
-    const shuffleArray = (array: Item[]): Item[] => {
+  
+  const shuffleArray = (array: Item[]): Item[] => {
     const newArray = [...array]
   
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -61,6 +63,7 @@ export default function ConnectWords(_: Props) {
   
     return newArray
   }
+  
   const shuffledITEMS = shuffleArray(ITEMS)
 
   return (
@@ -74,23 +77,21 @@ export default function ConnectWords(_: Props) {
             key={item.id}
             onLayout={(e) => {
               const layout = e.nativeEvent.layout
-
               setTargets((prev) => ({
                 ...prev,
                 [item.id]: {
-                  x: layout.x + 60, // center adjust
-                  y: layout.y + 180, // oli y: layout.y + 50 ,tää varmaan sopii näin
+                  x: layout.x + 60,
+                  y: layout.y + 180,
                 },
               }))
             }}
             style={styles.SWEWordBox}
           >
-            <Text>{item.SWE_word}</Text>
+            <Text style={styles.SWEWordText}>{item.SWE_word}</Text>
           </View>
         ))}
       </View>
       
-
       {/* WORDS */}
       <View style={styles.FINWordBackground}>
         {shuffledITEMS.map((item) => {
@@ -99,7 +100,6 @@ export default function ConnectWords(_: Props) {
             return null
           }
           
-
           const target = targets[item.id]
 
           return (
@@ -108,6 +108,7 @@ export default function ConnectWords(_: Props) {
               item={item}
               target={target}
               onMatch={handleMatch}
+              isDark={isDark}
             />
           )
         })}
@@ -117,7 +118,7 @@ export default function ConnectWords(_: Props) {
   )
 }
 
-function DraggableWord({ item, target, onMatch }: DragProps) {
+function DraggableWord({ item, target, onMatch, isDark }: DragProps & { isDark: boolean }) {
   console.log("Rendering DraggableWord for item:", item)
   const translateX = useSharedValue(0)
   const translateY = useSharedValue(0)
@@ -125,7 +126,7 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
   const startY = useSharedValue(0)
   const playWrongBeep = usePlayAudioWrongBeep()
   
-  
+  const styles = createStyles(isDark)
 
   const gesture = Gesture.Pan()
     .onStart(() => {
@@ -152,8 +153,7 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
 
       const SNAP_DISTANCE = 55
       
-      
-      // measure distance and play wrong beep if close but wrong, all in this page is hardcoded :()
+      // measure distance and play wrong beep if close but wrong
       if (distance > SNAP_DISTANCE && e.absoluteY < 300) {
         try {
           if (playWrongBeep) {
@@ -172,7 +172,6 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
         translateX.value = withSpring(
           translateX.value + (target.x - e.absoluteX)
         )
-
         translateY.value = withSpring(
           translateY.value + (target.y - e.absoluteY)
         )
@@ -193,9 +192,7 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
     ],
   }))
 
-
   return (
-    
     <GestureHandlerRootView>
     <GestureDetector gesture={gesture}>
       <Animated.View style={[styles.FINWordBox, style]}>
@@ -206,34 +203,35 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
   )
 }
 
-
-
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 4,
     paddingTop: 80,
-    backgroundColor: "green",
+    backgroundColor: isDark ? '#1a2a1a' : "green",
     alignItems: "center",
   },
-
   targets: {
     flexDirection: "row",
     justifyContent: "space-around",
     width,
     marginBottom: 100,
   },
-
   SWEWordBox: {
     width: 100,
     height: 100,
     borderRadius: 6,
-    backgroundColor: "#9e0",
+    backgroundColor: isDark ? '#4a6a2a' : "#9e0",
     justifyContent: "center",
     alignItems: "center",
     elevation: 1,
   },
+  SWEWordText: {
+    color: isDark ? '#FFFFFF' : '#000000',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   FINWordBackground: {
-    backgroundColor: "green",
+    backgroundColor: isDark ? '#1a2a1a' : "green",
     paddingVertical: 1,
     borderRadius: 1,
     width: "100%",
@@ -244,7 +242,7 @@ const styles = StyleSheet.create({
   FINWordBox: {
     flex: 0,
     maxHeight: "60%",
-    backgroundColor: "#4CAF50",
+    backgroundColor: isDark ? '#2a6a2a' : "#4CAF50",
     paddingVertical: 14,
     borderRadius: 14,
     elevation: 5,

@@ -9,7 +9,7 @@ const ThemeToggle: React.FC = () => {
     <TouchableOpacity onPress={toggleTheme} style={[styles.container, isDark ? styles.dark : styles.light]}>
       <View style={[styles.toggleCircle, isDark ? styles.toggleCircleDark : styles.toggleCircleLight]}>
         <Text style={[styles.icon, isDark ? styles.iconDark : styles.iconLight]}>
-          {isDark ? 'D' : 'L'}
+          {isDark ? '🌙' : '☀️'}
         </Text>
       </View>
       <Text style={[styles.text, isDark ? styles.textDark : styles.textLight]}>

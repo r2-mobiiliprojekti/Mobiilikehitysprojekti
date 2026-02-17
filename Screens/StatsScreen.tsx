@@ -6,8 +6,10 @@ import { useFocusEffect } from '@react-navigation/native'
 import { DbContext } from '../Services/databaseService'
 import { getStats } from '../Services/statisticsService'
 import { getUserStats } from '../Services/userStatsService'
+import { useTheme } from '../Contexts/ThemeContext'
 
 export default function StatsScreen() {
+  const { isDark } = useTheme()
   const db = useContext(DbContext)
 
   const [stats, setStats] = useState({ correct: 0, wrong: 0 })
@@ -18,6 +20,7 @@ export default function StatsScreen() {
     worst_wrong_streak: 0,
   })
 
+  const styles = createStyles(isDark)
   const load = useCallback(async () => {
     if (!db) return
 
@@ -61,6 +64,21 @@ export default function StatsScreen() {
     ],
   }
 
+  const chartConfig = {
+    backgroundGradientFrom: isDark ? '#1E1E1E' : '#fff',
+    backgroundGradientTo: isDark ? '#1E1E1E' : '#fff',
+    decimalPlaces: 0,
+    color: (opacity = 1) => isDark 
+      ? `rgba(255,255,255,${opacity})` 
+      : `rgba(0,0,0,${opacity})`,
+    labelColor: (opacity = 1) => isDark 
+      ? `rgba(255,255,255,${opacity})` 
+      : `rgba(0,0,0,${opacity})`,
+    propsForBackgroundLines: {
+      stroke: isDark ? '#333' : '#eee',
+    },
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tilastot</Text>
@@ -73,10 +91,10 @@ export default function StatsScreen() {
             widthAndHeight={220}
             series={series}
             labels={(slice) => `${Math.round((slice.value / total) * 100)}%`}
-            cover={{ radius: 0.55, color: '#fff' }}
+            cover={{ radius: 0.55, color: isDark ? '#1E1E1E' : '#fff' }}
           />
 
-          <View style={{ marginTop: 16 }}>
+          <View style={styles.statsContainer}>
             <Text style={styles.text}>
               Oikein: {stats.correct} ({Math.round((stats.correct / total) * 100)}%)
             </Text>
@@ -85,11 +103,11 @@ export default function StatsScreen() {
             </Text>
           </View>
 
-          <View style={{ marginTop: 20 }}>
-            <Text style={styles.text}>🤠 Nykyinen Putki: {streak.current_streak}</Text>
-            <Text style={styles.text}>🤓 Paras putki: {streak.best_streak}</Text>
-            <Text style={styles.text}>🤕 Häviöputki: {streak.current_wrong_streak}</Text>
-            <Text style={styles.text}>🤯 Pahin häviöputki: {streak.worst_wrong_streak}</Text>
+          <View style={styles.streakContainer}>
+            <Text style={styles.streakText}>🤠 Nykyinen Putki: {streak.current_streak}</Text>
+            <Text style={styles.streakText}>🤓 Paras putki: {streak.best_streak}</Text>
+            <Text style={styles.streakText}>🤕 Häviöputki: {streak.current_wrong_streak}</Text>
+            <Text style={styles.streakText}>🤯 Pahin häviöputki: {streak.worst_wrong_streak}</Text>
           </View>
 
           <BarChart
@@ -99,15 +117,8 @@ export default function StatsScreen() {
             fromZero
             withInnerLines={false}
             showValuesOnTopOfBars
-            chartConfig={{
-              backgroundGradientFrom: '#fff',
-              backgroundGradientTo: '#fff',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(0,0,0,${opacity})`,
-              labelColor: (opacity = 1) => `rgba(0,0,0,${opacity})`,
-              propsForBackgroundLines: { stroke: '#eee' },
-            }}
-            style={{ marginTop: 16, borderRadius: 12 }}
+            chartConfig={chartConfig}
+            style={styles.chart}
           />
         </>
       )}
@@ -115,10 +126,10 @@ export default function StatsScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: isDark ? '#121212' : '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
@@ -127,13 +138,31 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
     marginBottom: 16,
+    color: isDark ? '#FFFFFF' : '#333',
   },
   text: {
     fontSize: 16,
     marginTop: 6,
     textAlign: 'center',
+    color: isDark ? '#FFFFFF' : '#333',
+  },
+  statsContainer: {
+    marginTop: 16,
+  },
+  streakContainer: {
+    marginTop: 20,
+  },
+  streakText: {
+    fontSize: 16,
+    marginTop: 6,
+    textAlign: 'center',
+    color: isDark ? '#FFFFFF' : '#333',
   },
   noStats: {
-    color: '#666',
+    color: isDark ? '#BBBBBB' : '#666',
+  },
+  chart: {
+    marginTop: 16,
+    borderRadius: 12,
   },
 })
