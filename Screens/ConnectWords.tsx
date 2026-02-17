@@ -49,6 +49,7 @@ export default function ConnectWords(_: Props) {
     { id: 2, SWE_word: entry2.swedish, FIN_word: entry2.translations},
     { id: 3, SWE_word: entry3.swedish, FIN_word: entry3.translations},
   ]
+
     const shuffleArray = (array: Item[]): Item[] => {
     const newArray = [...array]
   
@@ -58,7 +59,6 @@ export default function ConnectWords(_: Props) {
       newArray[i] = newArray[j]
       newArray[j] = temp
     }
-  
     return newArray
   }
   const shuffledITEMS = shuffleArray(ITEMS)
@@ -99,7 +99,6 @@ export default function ConnectWords(_: Props) {
             return null
           }
           
-
           const target = targets[item.id]
 
           return (
@@ -125,8 +124,6 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
   const startY = useSharedValue(0)
   const playWrongBeep = usePlayAudioWrongBeep()
   
-  
-
   const gesture = Gesture.Pan()
     .onStart(() => {
       startX.value = translateX.value
@@ -164,7 +161,6 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
         } catch (error) {
           console.error('Error playing wrong beep:', error);
         }
-      
       }
 
       if (distance < SNAP_DISTANCE) {
@@ -193,9 +189,7 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
     ],
   }))
 
-
   return (
-    
     <GestureHandlerRootView>
     <GestureDetector gesture={gesture}>
       <Animated.View style={[styles.FINWordBox, style]}>
@@ -205,7 +199,6 @@ function DraggableWord({ item, target, onMatch }: DragProps) {
     </GestureHandlerRootView>
   )
 }
-
 
 
 const styles = StyleSheet.create({
