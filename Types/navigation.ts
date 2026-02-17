@@ -2,6 +2,7 @@ export type RootStackParamList = {
     Auth: undefined;
     MainApp: undefined;
     Profile: undefined;
+    Stats: undefined;
   };
   
   export type AuthStackParamList = {
@@ -16,4 +17,5 @@ export type RootStackParamList = {
     ConnectWords: undefined;
     PickWord: undefined;
     Profile: undefined;
+    Stats: undefined;
   };

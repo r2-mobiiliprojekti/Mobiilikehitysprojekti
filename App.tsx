@@ -11,14 +11,12 @@ import ConnectWords from './Screens/ConnectWords';
 import PickWord from './Screens/PickWord';
 import MainScreen from './Screens/MainScreen';
 import { RootStackParamList, AuthStackParamList, MainAppStackParamList } from './Types/navigation';
-
-import { 
-  getCurrentUser, 
-  onAuthStateChange,
-  setGuestMode,
-  AppUser 
-} from './Services/firebaseService';
 import { ThemeProvider, useTheme } from './Contexts/ThemeContext';
+import { getCurrentUser, onAuthStateChange, setGuestMode, getStoredUser, AppUser } from './Services/firebaseService';
+import * as SQLite from 'expo-sqlite'
+import { DbContext } from './Services/databaseService';
+import Stats from './Screens/StatsScreen';
+import { getUserStats } from './Services/userStatsService';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 const AuthStack = createNativeStackNavigator<AuthStackParamList>()
@@ -112,7 +110,18 @@ function MainAppNavigator() {
             backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5',
           },
           headerTintColor: isDark ? '#fff' : '#000',
-        }} 
+        }}
+        />
+
+      <MainAppStack.Screen 
+        name="Stats" 
+        component={Stats} 
+        options={{ 
+          title: 'Tilastot',
+          headerStyle: {
+            backgroundColor: '#f5f5f5',
+          },
+        }}
       />
     </MainAppStack.Navigator>
   );
@@ -145,6 +154,59 @@ function AppContent() {
   
   const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [db,setDb] = useState<SQLite.SQLiteDatabase | null>(null);
+
+
+  useEffect(() => {
+    const initDb = async () => {
+      const database = await SQLite.openDatabaseAsync('tilastot.db')
+      setDb(database)
+      console.log('Database initialized...')
+
+      await database.execAsync(`
+      CREATE TABLE IF NOT EXISTS wrong_words (
+        id INTEGER PRIMARY KEY,
+        word TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS correct_words (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        word TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS user_stats (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      current_streak INTEGER DEFAULT 0,
+      best_streak INTEGER DEFAULT 0
+      );
+    `);
+      
+      try {
+        await database.execAsync(`
+    ALTER TABLE user_stats ADD COLUMN current_wrong_streak INTEGER DEFAULT 0;
+  `);
+      } catch (e) {
+        console.log("current_wrong_streak already exists");
+      }
+
+      try {
+        await database.execAsync(`
+    ALTER TABLE user_stats ADD COLUMN worst_wrong_streak INTEGER DEFAULT 0;
+  `);
+      } catch (e) {
+        console.log("worst_wrong_streak already exists");
+      }
+
+
+      await getUserStats(database);
+    }
+    initDb()
+  }, [])
+
+
+  
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
@@ -209,6 +271,7 @@ function AppContent() {
   }
 
   return (
+    <DbContext.Provider value={db}>
     <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
       {currentUser ? (
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -233,6 +296,7 @@ function AppContent() {
         </RootStack.Navigator>
       )}
     </NavigationContainer>
+    </DbContext.Provider>
   );
 }
 

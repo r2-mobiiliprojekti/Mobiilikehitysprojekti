@@ -7,6 +7,9 @@ import type { Sanasto } from '../Types/sanasto'
 import { getWord } from '../api/Freedict/fetcher'
 import { DbContext } from '../Services/databaseService'
 import { saveWrongWord } from '../Services/wrongWordService'
+import { saveCorrectWord } from '../Services/correctWordService'
+import { updateStreak } from '../Services/streakService'
+
 
 
 export type Props = NativeStackScreenProps<MainAppStackParamList, 'FinSwe'>
@@ -18,6 +21,12 @@ export default function FinSwe({ navigation }: Props) {
   const accepted = entry.translations.join(', ')
   const [words, setWords] = useState<string[]>([]);
   const db = useContext(DbContext);
+  const dbReady = !!db;
+  useEffect(() => {
+  console.log("FinSwe db:", db ? "READY" : "NULL");
+}, [db]);
+
+
 
 
 
@@ -45,7 +54,7 @@ export default function FinSwe({ navigation }: Props) {
         //setError('Failed to fetch freedict data')
       } finally {
         //setLoading(false);
-      }
+      } 
     };
     fetchFreedict();
   }, [entry]);
@@ -60,19 +69,31 @@ async function checkAnswer() {
 const ok = isCorrectFinnish(entry, answer);
 setResult(ok);
 
-  if (!ok) {
-    if (!db) {
+if (!db) {
       console.log('Database not initialized');
-      return;
-    }
-    await saveWrongWord(db, entry.swedish);
-    console.log('Wrong word saved to database')
+return;
+}
+
+  if (ok) {
+    await saveCorrectWord(db, entry.swedish);
+    console.log('Correct answer saved to database')
+  } else {
+    await saveWrongWord(db,entry.swedish);
+    console.log('Wrong word saves to database')
+  }
 
 const rows = await db.getAllAsync(`SELECT COUNT(*) as c FROM wrong_words;`);
 console.log("Wrong words count:", rows);
 
-  }
+const rows2 = await db.getAllAsync(`SELECT COUNT(*) as c FROM correct_words;`);
+console.log("Correct answers count;", rows2);
+
+await updateStreak(db, ok)
+console.log("Streak updated:", ok ? "correct" : "wrong")
+const s = await db.getFirstAsync("SELECT * FROM user_stats WHERE id = 1")
+console.log("user_stats row now:", s)
 }
+
 
 
 
