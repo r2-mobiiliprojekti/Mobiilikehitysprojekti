@@ -60,7 +60,6 @@ export default function ConnectWords(_: Props) {
       newArray[i] = newArray[j]
       newArray[j] = temp
     }
-  
     return newArray
   }
   
@@ -164,7 +163,6 @@ function DraggableWord({ item, target, onMatch, isDark }: DragProps & { isDark: 
         } catch (error) {
           console.error('Error playing wrong beep:', error);
         }
-      
       }
 
       if (distance < SNAP_DISTANCE) {
