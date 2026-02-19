@@ -2,12 +2,12 @@
 export const firebaseConfig = {
   apiKey: "",
   authDomain: "",
-  //databaseURL: "mobiilikehitysprojekti-c4c1c",
+  databaseURL: "",
   projectId: "",
   storageBucket: "",
   messagingSenderId: "",
   appId: "",
-  //measurementId: "MEASUREMENT_ID_HERE"
+  measurementId: ""
 };
 
 //Demoa varten

@@ -28,7 +28,14 @@
     },
     "plugins": [
       "@react-native-firebase/auth",
-      "expo-sqlite"
-    ]
+      "expo-sqlite",
+      "@react-native-community/datetimepicker"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2d6e6d0c-d245-4d02-aa81-64d5f7b37e5b"
+      }
+    },
+    "owner": "lassiy"
   }
 }

@@ -43,3 +43,4 @@ firebaseConfig.ts
 
 # assets
 /assets/sanasto.json
+/google-services.json
