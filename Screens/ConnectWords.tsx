@@ -50,13 +50,8 @@ export default function ConnectWords(_: Props) {
     { id: 2, SWE_word: entry2.swedish, FIN_word: entry2.translations},
     { id: 3, SWE_word: entry3.swedish, FIN_word: entry3.translations},
   ]
-<<<<<<< HEAD
-
-    const shuffleArray = (array: Item[]): Item[] => {
-=======
   
   const shuffleArray = (array: Item[]): Item[] => {
->>>>>>> 1d88c714b404a743c517d24845b1f398d03099ad
     const newArray = [...array]
   
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -130,11 +125,8 @@ function DraggableWord({ item, target, onMatch, isDark }: DragProps & { isDark: 
   const startY = useSharedValue(0)
   const playWrongBeep = usePlayAudioWrongBeep()
   
-<<<<<<< HEAD
-=======
   const styles = createStyles(isDark)
 
->>>>>>> 1d88c714b404a743c517d24845b1f398d03099ad
   const gesture = Gesture.Pan()
     .onStart(() => {
       startX.value = translateX.value
@@ -209,12 +201,7 @@ function DraggableWord({ item, target, onMatch, isDark }: DragProps & { isDark: 
   )
 }
 
-<<<<<<< HEAD
-
-const styles = StyleSheet.create({
-=======
 const createStyles = (isDark: boolean) => StyleSheet.create({
->>>>>>> 1d88c714b404a743c517d24845b1f398d03099ad
   container: {
     flex: 4,
     paddingTop: 80,
