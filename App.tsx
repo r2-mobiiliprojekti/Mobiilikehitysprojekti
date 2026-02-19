@@ -17,6 +17,9 @@ import * as SQLite from 'expo-sqlite'
 import { DbContext } from './Services/databaseService';
 import Stats from './Screens/StatsScreen';
 import { getUserStats } from './Services/userStatsService';
+import NotificationSettingsScreen from './Screens/NotificationSettingsScreen';
+
+
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 const AuthStack = createNativeStackNavigator<AuthStackParamList>()
@@ -122,6 +125,17 @@ function MainAppNavigator() {
             backgroundColor: '#f5f5f5',
           },
         }}
+      />
+      <MainAppStack.Screen 
+        name="NotificationSettings" 
+        component={NotificationSettingsScreen} 
+        options={{ 
+          title: 'Ilmoitusasetukset',
+          headerStyle: {
+            backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5',
+          },
+          headerTintColor: isDark ? '#fff' : '#000',
+        }} 
       />
     </MainAppStack.Navigator>
   );

@@ -50,10 +50,16 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onLogout, onGoToSignup })
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        {/*theme toggle*/}
         <View style={styles.themeToggleContainer}>
           <ThemeToggle />
         </View>
+        
+        <TouchableOpacity 
+          style={styles.notificationButton}
+          onPress={() => navigation.navigate('MainApp', { screen: 'NotificationSettings' })}
+        >
+          <Text style={styles.notificationButtonText}>🔔 Ilmoitusasetukset</Text>
+        </TouchableOpacity>
         
         <Text style={styles.welcomeText}>
           Tervetuloa, {user.email}!
@@ -111,6 +117,24 @@ const createStyles = (isDark: boolean) => StyleSheet.create({
     top: 20,
     right: 20,
     zIndex: 10,
+  },
+  notificationButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    padding: 10,
+    backgroundColor: '#2196F3',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: isDark ? 0.3 : 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  notificationButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   welcomeText: {
     fontSize: 32,
