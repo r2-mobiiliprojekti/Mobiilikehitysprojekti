@@ -5,7 +5,7 @@ Käyttöliittymä suunnitelma: https://app.moqups.com/9wehYISvBnH80ExfkC6m5IitRR
 
 # Ruotsin kielen harjoittelusovellus
 
-Sanasto on React Native -sovellus ruotsin kielen sanaston harjoitteluun. Sovellus tarjoaa erilaisia harjoitusmuotoja ja seuraa käyttäjän edistymistä. Toteutettu ryhmätyönä Mobiilikehitys-kurssilla.
+Mobiilikehitysprojektimme on React Native -sovellus ruotsin kielen sanaston harjoitteluun. Sovellus tarjoaa erilaisia harjoitusmuotoja ja seuraa käyttäjän edistymistä. Toteutettu ryhmätyönä Mobiilikehitys-kurssilla.
 
 ## Ominaisuudet
 
@@ -139,42 +139,73 @@ Kun projekti on luotu:
   
 
 
-### Rakenne
-  ```bash
-  sanasto/
-  ├── src/
-  │   ├── Components/          
-  │   │   ├── ThemeToggle.tsx
-  │   │   └── ...
-  │   ├── Contexts/            
-  │   │   └── ThemeContext.tsx
-  │   ├── Screens/             # Näkymät
-  │   │   ├── HomeScreen.tsx
-  │   │   ├── FinSwe.tsx
-  │   │   ├── SweFin.tsx
-  │   │   ├── ConnectWords.tsx
-  │   │   ├── PickWord.tsx
-  │   │   ├── StatsScreen.tsx
-  │   │   ├── ProfileScreen.tsx
-  │   │   ├── LoginScreen.tsx
-  │   │   ├── SignupScreen.tsx
-  │   │   ├── MainScreen.tsx
-  │   │   └── NotificationSettingsScreen.tsx
-  │   ├── Services/            # Palvelut ja apufunktiot
-  │   │   ├── sanastoService.ts
-  │   │   ├── databaseService.ts
-  │   │   ├── firebaseService.ts
-  │   │   ├── statisticsService.ts
-  │   │   ├── notificationHelpers.ts
-  │   │   └── ...
-  │   ├── Types/               
-  │   │   ├── navigation.ts
-  │   │   ├── sanasto.ts
-  │   │   └── ...
-  │   └── api/                  # API-kutsut
-  │       └── Freedict/
-  │           └── fetcher.ts
-  ├── assets/                    # Kuvat ja fontit
-  ├── App.tsx                     # Pääkomponentti
-  ├── app.json                    # Expo-konfiguraatio
-  └── package.json                # Riippuvuudet
+7. ### Rakenne:
+   ```bash
+     sanasto/
+     ├── src/
+     │   ├── Components/          
+     │   │   ├── ThemeToggle.tsx
+     │   │   └── ...
+     │   ├── Contexts/            
+     │   │   └── ThemeContext.tsx
+     │   ├── Screens/             # Näkymät
+     │   │   ├── HomeScreen.tsx
+     │   │   ├── FinSwe.tsx
+     │   │   ├── SweFin.tsx
+     │   │   ├── ConnectWords.tsx
+     │   │   ├── PickWord.tsx
+     │   │   ├── StatsScreen.tsx
+     │   │   ├── ProfileScreen.tsx
+     │   │   ├── LoginScreen.tsx
+     │   │   ├── SignupScreen.tsx
+     │   │   ├── MainScreen.tsx
+     │   │   └── NotificationSettingsScreen.tsx
+     │   ├── Services/            # Palvelut ja apufunktiot
+     │   │   ├── sanastoService.ts
+     │   │   ├── databaseService.ts
+     │   │   ├── firebaseService.ts
+     │   │   ├── statisticsService.ts
+     │   │   ├── notificationHelpers.ts
+     │   │   └── ...
+     │   ├── Types/               
+     │   │   ├── navigation.ts
+     │   │   ├── sanasto.ts
+     │   │   └── ...
+     │   └── api/                  # API-kutsut
+     │       └── Freedict/
+     │           └── fetcher.ts
+     ├── assets/                    # Kuvat ja fontit
+     ├── App.tsx                     # Pääkomponentti
+     ├── app.json                    # Expo-konfiguraatio
+     └── package.json                # Riippuvuudet
+
+8. ### Käytetyt paketit sekä niiden versiot projektissamme:
+   ```bash
+   ├── @react-native-async-storage/async-storage@2.2.0
+   ├── @react-native-community/datetimepicker@8.4.4
+   ├── @react-native-firebase/auth@23.8.6
+   ├── @react-navigation/native-stack@7.13.0
+   ├── @react-navigation/native@7.1.28
+   ├── @types/react@19.1.17
+   ├── axios@1.13.5
+   ├── expo-audio@1.1.1
+   ├── expo-device@8.0.10
+   ├── expo-firebase-app@2.0.0
+   ├── expo-firebase-auth@2.0.0
+   ├── expo-notifications@0.32.16
+   ├── expo-sqlite@16.0.10
+   ├── expo@54.0.33
+   ├── firebase@12.9.0
+   ├── react-dom@19.1.0
+   ├── react-native-chart-kit@6.12.0
+   ├── react-native-gesture-handler@2.28.0
+   ├── react-native-pie-chart@4.0.2
+   ├── react-native-reanimated@4.1.6
+   ├── react-native-safe-area-context@5.6.2
+   ├── react-native-screens@4.16.0
+   ├── react-native-svg@15.12.1
+   ├── react-native-web@0.21.2
+   ├── react-native-worklets@0.5.1
+   ├── react-native@0.81.5
+   ├── react@19.1.0
+   └── typescript@5.9.3
